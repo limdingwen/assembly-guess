@@ -1,0 +1,75 @@
+Please read SECTION V.1 in the README if you want to know what this hack is going to do, technically. Or else, this will be sufficient.
+
+guess is designed to run on most versions of Unix and was tested on Ubuntu Linux. However, Mac has a different method of calling syscalls, which are functions embedded within the kernel so that the program can access various things such as writing to the screen.
+
+Therefore, we have to hack it in order to let it run properly on the Mac OS X. And we're going to tell you how.
+
+This hack is NOT automatic.
+
+This hack will only work on 32-bit supporting Mac OS X systems running on the x86 CPU.
+
+This hack is going to change the following files:
+	- guess.asm
+	- Makefile
+
+So that they will produce a Mac OS X compatible guess binary file (executable) when the hack is done. In this hack, we will attempt to make it support Mac OS X in the least amount of code changes possible.
+
+We recommend that you make a backup of this package first in case you screw something up. Otherwise, continue.
+
+	STEP 1: EDIT GUESS.ASM
+
+1. Open up guess.asm in your favourite text editor.
+2. Scroll downwards until you see this:
+
+	__syscall:
+
+		int 0x80 ; Interupt kernel
+		ret
+
+	; Data declaration
+
+3. Change that to:
+
+	__syscall:
+
+		push ebx
+		push ecx
+		push edx
+
+		sub esp, 4
+
+		int 0x80 ; Interupt kernel
+		
+		add esp, 16
+
+		ret
+
+	; Data declaration
+
+5. Save the file and close it.
+
+	STEP 2: EDIT MAKEFILE
+
+1. Change
+
+	ld -melf_i386 -oguess guess.o
+
+to
+
+	ld -oguess guess.o
+
+2. Change
+
+	nasm -felf guess.asm
+
+to
+
+	nasm -fmacho guess.asm
+
+3. Save the file and close it.
+
+	AND YOU ARE DONE WITH THE HACK
+
+And you are done with the hack. Now all that you have to do is to run the makefile and compile the binary. When done, you can play!
+
+(For more instructions on how to "run the makefile and compile the binary", read the README, recommended SECTION II.)
