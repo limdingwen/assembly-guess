@@ -32,9 +32,9 @@ We recommend that you make a backup of this package first in case you screw some
 
 	__syscall:
 
-		push ebx
-		push ecx
 		push edx
+		push ecx
+		push ebx
 
 		sub esp, 4
 
@@ -56,7 +56,7 @@ We recommend that you make a backup of this package first in case you screw some
 
 to
 
-	ld -oguess guess.o
+	ld -o guess -e _start guess.o
 
 2. Change
 
